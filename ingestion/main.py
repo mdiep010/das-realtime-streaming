@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Redpanda producer
-p = Producer({"bootstrap.servers": "redpanda:9092"})
+p = Producer({"bootstrap.servers": "localhost:19092"})
 
 def fetch_weather():
     url = "https://api.open-meteo.com/v1/forecast"
