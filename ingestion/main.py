@@ -1,33 +1,47 @@
-import requests # lets us talk to APIs
-import time # allows a pause
-import os
+import requests
+import time
+import json
 from confluent_kafka import Producer
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def main():
-    print("Ingestion service started...")
-    
-    # TO DO: Add data source API connection
-    url = "https://api.open-meteo.com/v1/forecast"     # Weather API 
-    
+# Redpanda producer
+p = Producer({"bootstrap.servers": "redpanda:9092"})
+
+def fetch_weather():
+    url = "https://api.open-meteo.com/v1/forecast"
+
     params = {
         "latitude": 33.9533,
         "longitude": -117.3962,
         "current_weather": True
     }
 
-    while True:
-        r = requests.get(url, params=params)
+    return requests.get(url, params=params).json()
 
-        if r.status_code == 200:
-            print(r.json())
+def main():
+    print("Ingestion service started...")
+
+    while True:
+        data = fetch_weather()
+
+        payload = data.get("current_weather")
+
+        if payload:
+            p.produce(
+                topic="weather",
+                value=json.dumps(payload),
+            )
+
+            p.poll(0)
+            print("Sent data to redpanda")
+
         else:
-            print("Error:", r.status_code)
+            print("No weather data found")
 
         time.sleep(10)
-    # TO DO: Add redpanda connection
+        p.flush()
 
 if __name__ == "__main__":
     main()
