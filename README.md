@@ -15,6 +15,14 @@ To start up / shut down containers:
 - ```docker-compose up -d```
 - ```docker-compose down -v```
 
+To Run the pipeline:
+- open another terminal
+- ```cd ingestion```
+- ```python main.py```
+- open another terminal
+-  ```cd processing```
+-  ```python main.py```
+
 To verify things are running properly:
 - ```docker ps``` - check container status
 - ```docker-compose exec postgres psql -U username -d project_db``` - start a psql session
