@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS predictions (
-    id SERIAL PRIMARY KEY
-    tempearture FLOAT,
+    id SERIAL PRIMARY KEY,
+    temperature FLOAT,
     windspeed FLOAT,
     winddirection FLOAT,
     weathercode INT,

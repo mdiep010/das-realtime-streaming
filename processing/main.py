@@ -1,6 +1,6 @@
 import os
 from confluent_kafka import Consumer
-#import psycopg2
+import psycopg2
 import json 
 from dotenv import load_dotenv
 
@@ -15,6 +15,15 @@ def main():
         "auto.offset.reset": "earliest"
     })
     consumer.subscribe(["weather"])
+
+    conn = psycopg2.connect(
+    host="localhost",
+    database="project_db",
+    user="username",
+    password="password"
+    )
+
+    cur = conn.cursor()
 
     try:
         while True:
@@ -31,6 +40,21 @@ def main():
 
             print("Received message:")
             print(data)
+            cur.execute("""
+                INSERT INTO predictions 
+                (temperature, windspeed, winddirection, weathercode, weather_time, prediction)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (
+                data.get("temperature"),
+                data.get("windspeed"),
+                data.get("winddirection"),
+                data.get("weathercode"),
+                data.get("time"),
+                "normal"
+            ))
+
+            conn.commit()
+            print("Inserted into database")
 
     except KeyboardInterrupt:
         print("Stopping consumer...")
