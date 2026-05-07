@@ -28,5 +28,7 @@ To verify things are running properly:
 - ```docker-compose exec postgres psql -U username -d project_db``` - start a psql session
     - ```\dt``` - check what tables exist
     - ```\d {table_name}``` - view schema for specific table
+    - ```SELECT * FROM predictions;``` view data
+    - ```SELECT COUNT(*) FROM predictions;``` count rows
 - Go to ```http://localhost:8501``` to view dashboard
 - Go to ```http://localhost:8080``` to view broker interface
