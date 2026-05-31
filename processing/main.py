@@ -6,6 +6,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def make_prediction(temp):
+    if temp > 30:
+        return "hot"
+    elif temp < 0:
+        return "freezing"
+    elif temp < 10:
+        return "cold"
+    elif temp < 20:
+        return "mild"
+    else:
+        return "normal"
+
+def clean_data(data):
+    return {
+        "temperature": float(data.get("temperature")) if data.get("temperature") is not None else None,
+        "windspeed": float(data.get("windspeed")) if data.get("windspeed") is not None else None,
+        "winddirection": int(data.get("winddirection")) if data.get("winddirection") is not None else None,
+        "weathercode": int(data.get("weathercode")) if data.get("weathercode") is not None else None,
+        "weather_time": data.get("time"),
+        "prediction": make_prediction(float(data.get("temperature")))
+    }
+
 def main():
     print("Processing service started...")
     
@@ -36,7 +58,10 @@ def main():
                 print("Consumer error:", msg.error())
                 continue
 
-            data = json.loads(msg.value().decode("utf-8"))
+            raw = msg.value().decode("utf-8")
+            data = json.loads(raw)
+
+            cleaned = clean_data(data)
 
             print("Received message:")
             print(data)
@@ -45,12 +70,12 @@ def main():
                 (temperature, windspeed, winddirection, weathercode, weather_time, prediction)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (
-                data.get("temperature"),
-                data.get("windspeed"),
-                data.get("winddirection"),
-                data.get("weathercode"),
-                data.get("time"),
-                "normal"
+                cleaned["temperature"],
+                cleaned["windspeed"],
+                cleaned["winddirection"],
+                cleaned["weathercode"],
+                cleaned["weather_time"],
+                cleaned["prediction"]
             ))
 
             conn.commit()
