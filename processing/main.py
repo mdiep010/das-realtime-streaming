@@ -6,26 +6,40 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def make_prediction(temp):
-    if temp > 30:
+def make_prediction(temp, windspeed, weathercode):
+    if temp is None:
+        return "unknown"
+
+    if weathercode is not None and weathercode >= 50:
+        return "rainy"
+    elif temp > 30 and windspeed is not None and windspeed > 20:
+        return "hot and windy"
+    elif temp > 30:
         return "hot"
     elif temp < 0:
         return "freezing"
     elif temp < 10:
         return "cold"
+    elif windspeed is not None and windspeed > 25:
+        return "windy"
     elif temp < 20:
         return "mild"
     else:
         return "normal"
 
 def clean_data(data):
+    temperature = float(data.get("temperature")) if data.get("temperature") is not None else None
+    windspeed = float(data.get("windspeed")) if data.get("windspeed") is not None else None
+    winddirection = int(data.get("winddirection")) if data.get("winddirection") is not None else None
+    weathercode = int(data.get("weathercode")) if data.get("weathercode") is not None else None
+
     return {
-        "temperature": float(data.get("temperature")) if data.get("temperature") is not None else None,
-        "windspeed": float(data.get("windspeed")) if data.get("windspeed") is not None else None,
-        "winddirection": int(data.get("winddirection")) if data.get("winddirection") is not None else None,
-        "weathercode": int(data.get("weathercode")) if data.get("weathercode") is not None else None,
+        "temperature": temperature,
+        "windspeed": windspeed,
+        "winddirection": winddirection,
+        "weathercode": weathercode,
         "weather_time": data.get("time"),
-        "prediction": make_prediction(float(data.get("temperature")))
+        "prediction": make_prediction(temperature, windspeed, weathercode)
     }
 
 def main():
