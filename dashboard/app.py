@@ -1,24 +1,20 @@
-import streamlit as st
+import os
 import psycopg2
 import pandas as pd
-import os
+import streamlit as st
 
 st.title("Project Dashboard")
-st.write("Visualize data!")
+st.write("Weather Data from UCR!")
 
-# TO DO: Add connection to postgres and visualizations
+conn = psycopg2.connect(os.environ["DATABASE_URL"])
 
-conn = psycopg2.connect(
-    host="postgres",
-    database="project_db",
-    user="username",
-    password="password"
-)
+query = """
+SELECT * FROM predictions
+ORDER BY created_at DESC
+LIMIT 20;
+"""
 
-# Query data
-query = "SELECT * FROM predictions ORDER BY created_at DESC LIMIT 20;"
 df = pd.read_sql(query, conn)
 
-# Show data
 st.subheader("Latest Data")
 st.dataframe(df)

@@ -1,0 +1,14 @@
+services:
+  ingestion:
+    build: ./ingestion
+    env_file: .env
+
+  processing:
+    build: ./processing
+    env_file: .env
+
+  dashboard:
+    build: ./dashboard
+    env_file: .env
+    ports:
+      - "8501:8501"
