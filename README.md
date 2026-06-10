@@ -2,6 +2,8 @@
 
 DAS Spring 2026 project
 
+https://das-realtime-streaming-zu7rpfljea-uc.a.run.app/
+
 Set up:
 - Download Docker Desktop
 - Fork/clone repository
