@@ -9,10 +9,11 @@ st.write("Visualize data!")
 # TO DO: Add connection to postgres and visualizations
 
 conn = psycopg2.connect(
-    host="postgres",
-    database="project_db",
-    user="username",
-    password="password"
+    host=os.getenv("DB_HOST"),
+    port=os.getenv("DB_PORT"),
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASS")
 )
 
 # Query data
