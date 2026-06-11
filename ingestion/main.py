@@ -13,21 +13,21 @@ def make_prediction(temp, windspeed, weathercode):
     if temp is None:
         return "unknown"
     if weathercode is not None and weathercode >= 50:
-        return "rainy"
+        return "Rainy"
     elif temp > 30 and windspeed is not None and windspeed > 20:
-        return "hot and windy"
+        return "Hot and windy"
     elif temp > 30:
-        return "hot"
+        return "Hot"
     elif temp < 0:
-        return "freezing"
+        return "Freezing"
     elif temp < 10:
-        return "cold"
+        return "Cold"
     elif windspeed is not None and windspeed > 25:
-        return "windy"
+        return "Windy"
     elif temp < 20:
-        return "mild"
+        return "Mild"
     else:
-        return "normal"
+        return "Normal"
     
 def clean_data(data):
     temperature_c = float(data.get("temperature")) if data.get("temperature") is not None else None
